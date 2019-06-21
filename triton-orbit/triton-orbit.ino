@@ -1,5 +1,5 @@
 /*
- Name:		triton.ino
+ Name:		triton-orbit.ino
  Created:	6/18/2019 6:38:32 PM
  Author:	Justin
 */
@@ -11,6 +11,7 @@
 
 SoftwareSerial serial_connection(10, 11);
 TinyGPSPlus gps;
+
 void setup() {
 	Serial.begin(9600);
 	serial_connection.begin(9600);
@@ -38,7 +39,7 @@ void loop() {
 	}
 	else {
 		Serial.print("Satellite Count: ");
-		Serial.println(gps.satellites.value());		
+		Serial.println(gps.satellites.value());
 	}
 	delay(1);
 }

@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="triton.ino" />
+    <None Include="triton-ground.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="__vm\.triton.vsarduino.h">
+    <ClInclude Include="__vm\.triton-ground.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
