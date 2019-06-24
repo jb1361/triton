@@ -22,15 +22,17 @@ void setup() {
 
 // the loop function runs over and over again until power down or reset
 void loop() {
-	uint8_t buf[24];
+	uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
 	uint8_t buflen = sizeof(buf);
-	//Serial.println("Waiting for data");
-	//Serial.println(driver.rxGood());
 	if(driver.recv(buf, &buflen)) {
-		Serial.print((char*)buf);
-		Serial.print(" : " + i);
-		Serial.println();
-		i++;
+		String data;
+		//driver.printBuffer("", buf, buflen);
+		for (int i = 0; i < buflen; i++)
+		{
+			data += (char)buf[i];
+		}
+		Serial.println(data);
+
 	}
 	delay(1);
 }

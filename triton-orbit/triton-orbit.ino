@@ -5,54 +5,61 @@
 */
 
 
+#include <NeoSWSerial.h>
+#include <NMEAGPS.h>
 #include <SPI.h>
-#include "TinyGPS++.h"
-#include "SoftwareSerial.h"
 #include <RH_ASK.h>
 
-SoftwareSerial serial_connection(10, 11);
-TinyGPSPlus gps;
+//GPS pins
+//rx - pin 10
+//tx - pin 11
+NeoSWSerial gps_port(10, 11);
+NMEAGPS     gps;
 
 RH_ASK driver(2000, NULL, 12, NULL);
 
+
 void setup() {
 	Serial.begin(9600);
-	serial_connection.begin(9600);
-	Serial.println("GPS Start");
-	Serial.println("Starting Transmitter");
+	Serial.println(F("Starting Triton"));
+	gps_port.begin(9600);
 	if (!driver.init()) {
 		Serial.println("Radio Head driver failed");
+		TransmitData("Radio Head driver failed");
 	}
 }
 
 void loop() {
-	while (serial_connection.available())
+
+	while (gps.available(gps_port))
 	{
-		gps.encode(serial_connection.read());
+		gps_fix fix = gps.read();
+
+		if (fix.valid.location)
+		{
+			String satalliteCount = "Satellite Count: " + fix.satellites;			
+			String latitude = "Latitude: " + String(fix.latitude(), 6);
+			String longitude = "Longitude: " + String(fix.longitude(), 6);
+			String speed = "Speed Kmph: " + String(fix.speed_kph());
+			String altitude = "Altitude(meters): " + String(fix.altitude());
+			String time = "Timestamp : " + fix.dateTime.date;
+			TransmitData(satalliteCount);
+			TransmitData(latitude);
+			TransmitData(longitude);
+			TransmitData(speed);
+			TransmitData(altitude);
+			TransmitData(time);
+		}		
 	}
-	if (gps.location.isUpdated())
-	{
-		String data = "Satellite Count: " + gps.satellites.value();
-		data += ", Latitude: " + String(gps.location.lat(), floor(sizeof(gps.location.lat())));
-		data += ", Longitude: " + String(gps.location.lng(), floor(sizeof(gps.location.lng())));
-		data += ", Speed MPH: " + String(gps.speed.mph(),floor(sizeof(gps.speed.mph())));
-		data += ", Altitude Feet : " + (String)gps.altitude.meters();
-		data += ", Timestamp : " + gps.time.value();
-		const char* msg = data.c_str();
-		driver.send((uint8_t*)msg, strlen(msg));
-		driver.waitPacketSent();
+	if (!gps.available(gps_port)) {
+		TransmitData("Finding Satellites...");
+		Serial.println("Finding Satellites");
 	}
-	else {
-		//Serial.println("Satellite Count: " + gps.satellites.value());
-		/*String data = "Satellite Count: " + gps.satellites.value();
-		Serial.println(data);
-		const char* msg = data.c_str();
-		driver.send((uint8_t*)msg, strlen(msg));
-		driver.waitPacketSent();*/
-		const char* msg = "Finding Sattallites...";
-		driver.send((uint8_t*)msg, strlen(msg));
-		driver.waitPacketSent();
-	}
-	
-	delay(500);
+	delay(2000);
+}
+
+void TransmitData(String data) {
+	const char* msg = data.c_str();
+	driver.send((uint8_t*)msg, strlen(msg));
+	driver.waitPacketSent();
 }
