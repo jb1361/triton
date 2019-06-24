@@ -30,7 +30,7 @@ void setup() {
 }
 
 void loop() {
-
+	
 	while (gps.available(gps_port))
 	{
 		gps_fix fix = gps.read();
@@ -49,13 +49,18 @@ void loop() {
 			TransmitData(speed);
 			TransmitData(altitude);
 			TransmitData(time);
-		}		
+		}
+		else {
+			TransmitData("Location not valid, waiting for more satallites.");
+			TransmitData("Satellites found: " + fix.satellites);
+		}
 	}
 	if (!gps.available(gps_port)) {
+		TransmitData("Satellites found: " + gps.read().satellites);
 		TransmitData("Finding Satellites...");
 		Serial.println("Finding Satellites");
 	}
-	delay(2000);
+	delay(1);
 }
 
 void TransmitData(String data) {
