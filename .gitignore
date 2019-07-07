@@ -328,3 +328,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+triton-ground/__vm/
+triton-orbit/__vm/
+triton-ground/__vm/
