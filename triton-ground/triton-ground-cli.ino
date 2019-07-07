@@ -13,13 +13,11 @@ char line[LINE_BUF_SIZE];
 char args[MAX_NUM_ARGS][ARG_BUF_SIZE];
 
 int cmd_help();
-int cmd_receive();
 int cmd_send();
 int cmd_getGPSData();
 
 int (*commands_func[])() {
 	&cmd_help,
-	&cmd_receive,
 	&cmd_send,
 	&cmd_getGPSData
 };
@@ -27,7 +25,6 @@ int (*commands_func[])() {
 //List of command names
 const char* commands_str[] = {
 	"--help",
-	"--receive",
 	"--send",
 	"--get gpsdata"
 };
@@ -73,10 +70,6 @@ int cmd_help() {
 	}
 	Serial.println("");
 
-}
-
-int cmd_receive() {
-	ReceiveData();
 }
 
 int cmd_send() {
