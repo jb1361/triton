@@ -16,8 +16,8 @@
 NeoSWSerial gps_port(10, 11);
 NMEAGPS     gps;
 
-//RF transmit/recieve pins
-//rx (reciever) - pin 8
+//RF transmit/receive pins
+//rx (receiver) - pin 8
 //tx (transmitter) - pin 9
 RH_ASK driver(2000, 8, 9, NULL);
 
@@ -32,7 +32,7 @@ void setup() {
 }
 
 void loop() {
-	RecieveData();
+	ReceiveData();
 	delay(1);
 }
 
@@ -73,7 +73,7 @@ void TransmitData(String data) {
 	driver.waitPacketSent();
 }
 
-void RecieveData() {
+void ReceiveData() {
 	uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
 	uint8_t buflen = sizeof(buf);
 	if (driver.recv(buf, &buflen)) {
@@ -88,6 +88,6 @@ void RecieveData() {
 
 void ParseCommand(String command) {
 	if (command == "gps")
-		Serial.println("Recieved GPS telemetry command.");
+		Serial.println("Received GPS telemetry command.");
 		GetGPSData();
 }

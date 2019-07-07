@@ -25,11 +25,11 @@ void setup() {
 
 void loop() {
 	run_cli();
-	RecieveData();
+	ReceiveData();
 	delay(1);
 }
 
-void RecieveData() {
+void ReceiveData() {
 	uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
 	uint8_t buflen = sizeof(buf);
 	if(driver.recv(buf, &buflen)) {
