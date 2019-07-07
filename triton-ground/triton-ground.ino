@@ -40,3 +40,9 @@ void RecieveData() {
 		Serial.println(data);
 	}
 }
+
+void TransmitData(String data) {
+	const char* msg = data.c_str();
+	driver.send((uint8_t*)msg, strlen(msg));
+	driver.waitPacketSent();
+}

@@ -14,16 +14,19 @@ char args[MAX_NUM_ARGS][ARG_BUF_SIZE];
 
 int cmd_help();
 int cmd_recieve();
+int cmd_send();
 
 int (*commands_func[])() {
 	&cmd_help,
-	&cmd_recieve
+	&cmd_recieve,
+	&cmd_send
 };
 
 //List of command names
 const char* commands_str[] = {
 	"--help",
-	"--recieve"
+	"--recieve",
+	"--send"
 };
 
 int num_commands = sizeof(commands_str) / sizeof(char*);
@@ -73,5 +76,9 @@ int cmd_help() {
 
 int cmd_recieve() {
 	RecieveData();
+}
+
+int cmd_send() {
+	TransmitData("Test data transmission");
 }
 

@@ -21,11 +21,6 @@ NMEAGPS     gps;
 //tx (transmitter) - pin 9
 RH_ASK driver(2000, 8, 9, NULL);
 
-
-void GetGPSData();
-void TransmitData(String data);
-void RecieveData();
-
 void setup() {
 	Serial.begin(9600);
 	Serial.println(F("Starting Triton"));
@@ -37,12 +32,13 @@ void setup() {
 }
 
 void loop() {
-	GetGPSData();
+	//GetGPSData();
 	RecieveData();
+	delay(1);
 }
 
 void GetGPSData() {
-	while (gps.available(gps_port))
+	if (gps.available(gps_port))
 	{
 		gps_fix fix = gps.read();
 
