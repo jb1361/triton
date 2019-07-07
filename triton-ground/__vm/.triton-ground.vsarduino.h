@@ -80,7 +80,6 @@ typedef void *__builtin_va_list;
 #define pgm_read_ptr(address_short)   short()
 
 #include "triton-ground.ino"
-#include "help.ino"
-#include "..\triton-orbit\trition_ground-cli.ino"
+#include "triton-ground-cli.ino"
 #endif
 #endif
