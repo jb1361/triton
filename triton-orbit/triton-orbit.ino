@@ -4,22 +4,22 @@
  Author:	Justin
 */
 
-
 #include <NeoSWSerial.h>
 #include <NMEAGPS.h>
 #include <SPI.h>
 #include <RH_ASK.h>
 
-//GPS pins
-//rx - pin 10
-//tx - pin 11
-NeoSWSerial gps_port(10, 11);
+#define FLYWHEEL_PIN 3   
+#define RF_RX_TRANSMITTER_PIN 8
+#define RF_TX_RECIEVER_PIN 9
+#define GPS_RX_PIN 10
+#define GPS_TX_PIN 11
+
+RH_ASK driver(2000, RF_RX_TRANSMITTER_PIN, RF_TX_RECIEVER_PIN, NULL);
+NeoSWSerial gps_port(GPS_RX_PIN, GPS_TX_PIN);
 NMEAGPS     gps;
 
-//RF transmit/receive pins
-//rx (receiver) - pin 8
-//tx (transmitter) - pin 9
-RH_ASK driver(2000, 8, 9, NULL);
+bool flywheelActive = false;
 
 void setup() {
 	Serial.begin(9600);
@@ -87,7 +87,36 @@ void ReceiveData() {
 }
 
 void ParseCommand(String command) {
-	if (command == "gps")
+	if (command == "gps") {
 		Serial.println("Received GPS telemetry command.");
 		GetGPSData();
+	}
+	else if (command == "activateFlywheel") {
+		Serial.println("Activating Flywheel.");
+		ActivateFlywheel();
+	}
+	else if (command == "deactivateFlywheel") {
+		Serial.println("Deactivating Flywheel.");
+		DeactivateFlywheel();
+	}
+	else if (command == "flywheelStatus") {
+		Serial.println("Sending flywheel Status.");
+		GetFlywheelStatus();
+	}
+}
+void GetFlywheelStatus() {
+	if (flywheelActive)
+		TransmitData("Flywheel is active.");
+	else
+		TransmitData("Flywheel is not active.");
+}
+
+void ActivateFlywheel() {
+
+	flywheelActive = true;
+}
+
+void DeactivateFlywheel() {
+
+	flywheelActive = false;
 }
