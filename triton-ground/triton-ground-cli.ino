@@ -12,20 +12,18 @@
 char line[LINE_BUF_SIZE];
 char args[MAX_NUM_ARGS][ARG_BUF_SIZE];
 
-bool error_flag = false;
-
 int cmd_help();
-int cmd_test();
+int cmd_recieve();
 
 int (*commands_func[])() {
 	&cmd_help,
-	&cmd_test
+	&cmd_recieve
 };
 
 //List of command names
 const char* commands_str[] = {
-	"help",
-	"test"
+	"--help",
+	"--recieve"
 };
 
 int num_commands = sizeof(commands_str) / sizeof(char*);
@@ -37,41 +35,28 @@ void cli_init() {
 }
 
 void run_cli() {
-	//Serial.print("> ");
-
 	read_line();
-	/*if (!error_flag) {
-		parse_line();
-	}*/
-	if (!error_flag) {
-		execute();
-		Serial.print("> ");
-	}
-
-	memset(line, 0, LINE_BUF_SIZE);
-	memset(args, 0, sizeof(args[0][0]) * MAX_NUM_ARGS * ARG_BUF_SIZE);
-
-	error_flag = false;
 }
 
 void read_line() {
-	String line_string;
-
+	String command;
 	if (Serial.available()) {
-		line_string = Serial.readStringUntil('\n');
-		if (!line_string.charAt(0) == '-' && !line_string.charAt(1) == '-') 
-			error_flag = true;
+		command = Serial.readStringUntil('\n');
+		if (command.charAt(0) == '-' && command.charAt(1) == '-') {
+			Serial.println(command);
+			execute(command);
+			Serial.print("> ");
+		}
 	}
 }
 
-int execute() {
+int execute(String command) {
 	for (int i = 0; i < num_commands; i++) {
-		if (strcmp(args[0], commands_str[i]) == 0) {
+		if (strcmp(command.c_str(), commands_str[i]) == 0) {
 			return(*commands_func[i])();
 		}
 	}
-
-	//Serial.println("Invalid command. Type \"help\" for more.");
+	Serial.println("Invalid command. Type \"--help\" for more.");
 	return 0;
 }
 
@@ -83,10 +68,10 @@ int cmd_help() {
 		Serial.println(commands_str[i]);
 	}
 	Serial.println("");
-	Serial.println("You can for instance type \"help led\" for more info on the LED command.");
+
 }
 
-int cmd_test() {
-	Serial.println(F("test command"));
+int cmd_recieve() {
+	RecieveData();
 }
 
