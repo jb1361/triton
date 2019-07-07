@@ -8,7 +8,7 @@
 #include <SPI.h>
 #include <RH_ASK.h>
 
-RH_ASK driver(2000, 8, 9, 10);
+RH_ASK driver(2000, 8, 9, NULL);
 int i = 0;
 
 void setup() {

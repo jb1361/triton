@@ -19,10 +19,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="triton-ground.ino" />
-    <None Include="..\triton-orbit\trition_ground-cli.ino" />
     <None Include="help.ino">
       <Filter>Commands</Filter>
     </None>
+    <None Include="..\triton-orbit\trition_ground-cli.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.triton-ground.vsarduino.h">

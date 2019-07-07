@@ -16,28 +16,39 @@
 NeoSWSerial gps_port(10, 11);
 NMEAGPS     gps;
 
-RH_ASK driver(2000, NULL, 12, NULL);
+//RF transmit/recieve pins
+//rx (reciever) - pin 8
+//tx (transmitter) - pin 9
+RH_ASK driver(2000, 8, 9, NULL);
 
+
+void GetGPSData();
+void TransmitData(String data);
+void RecieveData();
 
 void setup() {
 	Serial.begin(9600);
 	Serial.println(F("Starting Triton"));
 	gps_port.begin(9600);
 	if (!driver.init()) {
-		Serial.println("Radio Head driver failed");
-		TransmitData("Radio Head driver failed");
+		Serial.println(F("Radio Head driver failed"));
+		TransmitData(F("Radio Head driver failed"));
 	}
 }
 
 void loop() {
-	
+	GetGPSData();
+	RecieveData();
+}
+
+void GetGPSData() {
 	while (gps.available(gps_port))
 	{
 		gps_fix fix = gps.read();
 
 		if (fix.valid.location)
 		{
-			String satalliteCount = "Satellite Count: " + fix.satellites;			
+			String satalliteCount = "Satellite Count: " + fix.satellites;
 			String latitude = "Latitude: " + String(fix.latitude(), 6);
 			String longitude = "Longitude: " + String(fix.longitude(), 6);
 			String speed = "Speed Kmph: " + String(fix.speed_kph());
@@ -58,13 +69,25 @@ void loop() {
 	if (!gps.available(gps_port)) {
 		TransmitData("Satellites found: " + gps.read().satellites);
 		TransmitData("Finding Satellites...");
-		Serial.println("Finding Satellites");
 	}
-	delay(1);
 }
 
 void TransmitData(String data) {
 	const char* msg = data.c_str();
 	driver.send((uint8_t*)msg, strlen(msg));
 	driver.waitPacketSent();
+}
+
+void RecieveData() {
+	uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
+	uint8_t buflen = sizeof(buf);
+	if (driver.recv(buf, &buflen)) {
+		String data;
+		for (int i = 0; i < buflen; i++)
+		{
+			data += (char)buf[i];
+		}
+		Serial.print(F("Recieved radio transmission: "));
+		Serial.println(data);
+	}
 }
