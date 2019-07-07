@@ -25,6 +25,7 @@ void setup() {
 
 void loop() {
 	run_cli();
+	RecieveData();
 	delay(1);
 }
 

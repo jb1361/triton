@@ -32,7 +32,6 @@ void setup() {
 }
 
 void loop() {
-	//GetGPSData();
 	RecieveData();
 	delay(1);
 }
@@ -83,7 +82,12 @@ void RecieveData() {
 		{
 			data += (char)buf[i];
 		}
-		Serial.print(F("Recieved radio transmission: "));
-		Serial.println(data);
+		ParseCommand(data);
 	}
+}
+
+void ParseCommand(String command) {
+	if (command == "gps")
+		Serial.println("Recieved GPS telemetry command.");
+		GetGPSData();
 }

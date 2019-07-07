@@ -15,18 +15,21 @@ char args[MAX_NUM_ARGS][ARG_BUF_SIZE];
 int cmd_help();
 int cmd_recieve();
 int cmd_send();
+int cmd_getGPSData();
 
 int (*commands_func[])() {
 	&cmd_help,
 	&cmd_recieve,
-	&cmd_send
+	&cmd_send,
+	&cmd_getGPSData
 };
 
 //List of command names
 const char* commands_str[] = {
 	"--help",
 	"--recieve",
-	"--send"
+	"--send",
+	"--get gpsdata"
 };
 
 int num_commands = sizeof(commands_str) / sizeof(char*);
@@ -34,7 +37,6 @@ int num_commands = sizeof(commands_str) / sizeof(char*);
 void cli_init() {
 	Serial.println("Welcome to this simple Arduino command line interface (CLI).");
 	Serial.println("Type \"--help\" to see a list of commands.");
-	Serial.print("> ");
 }
 
 void run_cli() {
@@ -48,7 +50,7 @@ void read_line() {
 		if (command.charAt(0) == '-' && command.charAt(1) == '-') {
 			Serial.println(command);
 			execute(command);
-			Serial.print("> ");
+			Serial.println("");
 		}
 	}
 }
@@ -80,5 +82,9 @@ int cmd_recieve() {
 
 int cmd_send() {
 	TransmitData("Test data transmission");
+}
+
+int cmd_getGPSData() {
+	TransmitData("gps");
 }
 
