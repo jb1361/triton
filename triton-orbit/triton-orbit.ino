@@ -112,11 +112,11 @@ void GetFlywheelStatus() {
 }
 
 void ActivateFlywheel() {
-
+	analogWrite(FLYWHEEL_PIN, 255);
 	flywheelActive = true;
 }
 
 void DeactivateFlywheel() {
-
+	analogWrite(FLYWHEEL_PIN, 0);
 	flywheelActive = false;
 }
