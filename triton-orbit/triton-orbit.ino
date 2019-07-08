@@ -8,19 +8,23 @@
 #include <NMEAGPS.h>
 #include <SPI.h>
 #include <RH_ASK.h>
+#include <MPU9250.h>
 
 #define FLYWHEEL_PIN 2   
 #define RF_RX_TRANSMITTER_PIN 8
 #define RF_TX_RECIEVER_PIN 9
 #define GPS_RX_PIN 10
 #define GPS_TX_PIN 11
-//#define RESET_PIN 4
+
+void TransmitData(String data);
 
 RH_ASK driver(2000, RF_RX_TRANSMITTER_PIN, RF_TX_RECIEVER_PIN, NULL);
 NeoSWSerial gps_port(GPS_RX_PIN, GPS_TX_PIN);
 NMEAGPS     gps;
+MPU9250 IMU(Wire, 0x68);
 
 bool flywheelActive = false;
+int gyroscopeStatus;
 
 void setup() {
 	Serial.begin(9600);
@@ -30,6 +34,16 @@ void setup() {
 		Serial.println(F("Radio Head driver failed"));
 		TransmitData(F("Radio Head driver failed"));
 	}
+	
+	//begin returns -1 on failure
+	gyroscopeStatus = IMU.begin();
+	if (gyroscopeStatus == -1) {
+		Serial.println("GyroScope Failed to start.");
+		Serial.print("Status: ");
+		Serial.println(gyroscopeStatus);
+		TransmitData("GyroScope Failed to start. Status: " + String(gyroscopeStatus));
+	}
+
 	pinMode(FLYWHEEL_PIN, OUTPUT);
 }
 
