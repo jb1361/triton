@@ -94,6 +94,14 @@ void ParseCommand(String command) {
 		Serial.println("Sending IMU Data.");
 		GetIMUData();
 	}
+	else if (command == "test") {
+		Serial.println("Transmission Test.");
+		TestTransmission();
+	}
+}
+
+void TestTransmission() {
+	TransmitData("Transmission Sucessful!");
 }
 
 void GetGPSData() {

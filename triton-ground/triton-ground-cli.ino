@@ -13,29 +13,32 @@ char line[LINE_BUF_SIZE];
 char args[MAX_NUM_ARGS][ARG_BUF_SIZE];
 
 int cmd_help();
-int cmd_send();
+int cmd_test();
 int cmd_getGPSData();
 int cmd_activateFlywheel();
 int cmd_deactivateFlywheel();
 int cmd_flywheelStatus();
+int cmd_getIMUData();
 
 int (*commands_func[])() {
 	&cmd_help,
-	&cmd_send,
+	&cmd_test,
 	&cmd_getGPSData,
 	&cmd_activateFlywheel,
 	&cmd_deactivateFlywheel,
-	&cmd_flywheelStatus
+	&cmd_flywheelStatus,
+	&cmd_getIMUData
 };
 
 //List of command names
 const char* commands_str[] = {
 	"--help",
-	"--send",
+	"--test",
 	"--get gpsdata",
 	"--activateFlywheel",
 	"--deactivateFlywheel",
-	"--flywheelStatus"
+	"--flywheelStatus",
+	"--getIMUData"
 };
 
 int num_commands = sizeof(commands_str) / sizeof(char*);
@@ -81,8 +84,8 @@ int cmd_help() {
 
 }
 
-int cmd_send() {
-	TransmitData("Test data transmission");
+int cmd_test() {
+	TransmitData("test");
 }
 
 int cmd_getGPSData() {
@@ -101,3 +104,6 @@ int cmd_flywheelStatus() {
 	TransmitData("flywheelStatus");
 }
 
+int cmd_getIMUData() {
+	TransmitData("IMUData");
+}
