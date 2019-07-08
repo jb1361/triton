@@ -4,12 +4,13 @@
  Author:	Justin
 */
 
-#pragma once
+
 #include <NeoSWSerial.h>
 #include <NMEAGPS.h>
 #include <SPI.h>
 #include <RH_ASK.h>
 #include <MPU9250.h>
+#include <Wire.h>
 
 #define FLYWHEEL_PIN 2   
 #define RF_RX_RECEIVER_PIN 8
@@ -26,16 +27,17 @@ bool flywheelActive = false;
 int gyroscopeStatus;
 
 void setup() {
-	Serial.begin(9600);
+	Serial.begin(115200);
 	Serial.println(F("Starting Triton."));
+
 	gps_port.begin(9600);
 	if (!driver.init()) {
 		Serial.println(F("Radio Head driver failed."));
 		TransmitData(F("Radio Head driver failed."));
 	}
-	
-	//begin returns negative int on failure
-	gyroscopeStatus = IMU.begin();
+
+	SetupMPU9250();
+
 	if (gyroscopeStatus < 0) {
 		Serial.println("GyroScope Failed to start.");
 		Serial.print("Status: ");
@@ -47,9 +49,22 @@ void setup() {
 	Serial.println(F("Triton Started."));
 }
 
+void SetupMPU9250() {
+	Wire.setClock(100000);
+	Wire.begin();
+	pinMode(A4, INPUT_PULLUP);
+	pinMode(A5, INPUT_PULLUP);
+	gyroscopeStatus = IMU.setDlpfBandwidth(MPU9250::DLPF_BANDWIDTH_20HZ);
+	gyroscopeStatus = IMU.setSrd(19);
+	gyroscopeStatus = IMU.disableDataReadyInterrupt();
+	gyroscopeStatus = IMU.begin();
+}
+
 void loop() {
 	ReceiveData();
-	delay(1);
+	delay(200);
+	GetIMUData();
+	Serial.flush();
 }
 
 void TransmitData(String data) {
@@ -136,6 +151,7 @@ void GetGPSData() {
 }
 
 void GetIMUData() {
+	IMU.readSensor();
 	GetAccelerometerData();
 	GetGyroscopeData();
 	GetMagnetometerData();
