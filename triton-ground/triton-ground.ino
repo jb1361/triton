@@ -8,10 +8,11 @@
 #include <SPI.h>
 #include <RH_ASK.h>
 
-//RF transmit/recieve pins
-//rx (reciever) - pin 8
-//tx (transmitter) - pin 9
-RH_ASK driver(2000, 8, 9, NULL);
+#define RF_RX_RECEIVER_PIN 8
+#define RF_TX_TRANSMITTER_PIN 9
+
+
+RH_ASK driver(2000, RF_RX_RECEIVER_PIN, RF_TX_TRANSMITTER_PIN, NULL);
 
 void setup() {
 	Serial.begin(9600);
