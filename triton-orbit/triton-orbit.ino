@@ -9,11 +9,12 @@
 #include <SPI.h>
 #include <RH_ASK.h>
 
-#define FLYWHEEL_PIN 3   
+#define FLYWHEEL_PIN 2   
 #define RF_RX_TRANSMITTER_PIN 8
 #define RF_TX_RECIEVER_PIN 9
 #define GPS_RX_PIN 10
 #define GPS_TX_PIN 11
+//#define RESET_PIN 4
 
 RH_ASK driver(2000, RF_RX_TRANSMITTER_PIN, RF_TX_RECIEVER_PIN, NULL);
 NeoSWSerial gps_port(GPS_RX_PIN, GPS_TX_PIN);
@@ -29,6 +30,7 @@ void setup() {
 		Serial.println(F("Radio Head driver failed"));
 		TransmitData(F("Radio Head driver failed"));
 	}
+	pinMode(FLYWHEEL_PIN, OUTPUT);
 }
 
 void loop() {
@@ -68,6 +70,7 @@ void GetGPSData() {
 }
 
 void TransmitData(String data) {
+	Serial.println("Transmitting Data: " + data);
 	const char* msg = data.c_str();
 	driver.send((uint8_t*)msg, strlen(msg));
 	driver.waitPacketSent();
@@ -87,6 +90,7 @@ void ReceiveData() {
 }
 
 void ParseCommand(String command) {
+	Serial.println("Command Recieved: " + command);
 	if (command == "gps") {
 		Serial.println("Received GPS telemetry command.");
 		GetGPSData();
@@ -104,6 +108,7 @@ void ParseCommand(String command) {
 		GetFlywheelStatus();
 	}
 }
+
 void GetFlywheelStatus() {
 	if (flywheelActive)
 		TransmitData("Flywheel is active.");
@@ -112,11 +117,12 @@ void GetFlywheelStatus() {
 }
 
 void ActivateFlywheel() {
-	analogWrite(FLYWHEEL_PIN, 255);
+	digitalWrite(FLYWHEEL_PIN, HIGH);
 	flywheelActive = true;
 }
 
 void DeactivateFlywheel() {
-	analogWrite(FLYWHEEL_PIN, 0);
+	digitalWrite(FLYWHEEL_PIN, LOW);
 	flywheelActive = false;
 }
+
